@@ -36,7 +36,7 @@ void runTest(HashTable* table, const char* keysFile) {
         return;
     }
 
-    char buffer[256];
+    char buffer[c_maxWordLen] = {0};
 
     while (fgets(buffer, sizeof(buffer), file)) 
     {
@@ -50,6 +50,7 @@ void runTest(HashTable* table, const char* keysFile) {
         {
             printf("%s exist!\n", buffer);
         }
+        memset(buffer, 0, c_maxWordLen);
     }
 
     fclose(file);

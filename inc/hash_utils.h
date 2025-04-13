@@ -2,10 +2,10 @@
 #define HASH_UTILS_H
 
 const size_t c_tableSize =  750;
-const size_t c_maxWordLen = 100;
+const size_t c_maxWordLen = 32;
 
 typedef struct Node {
-    char* word;
+    char word[32];
     struct Node* prev;
     struct Node* next;
 } Node;

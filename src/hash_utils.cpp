@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <immintrin.h>
 
 #include "hash_utils.h"
 
@@ -67,7 +68,6 @@ void insertHT(HashTable* table, const unsigned char* word)
     {
         if (strcmp(current->word, (const char*)word) == 0) 
         {
-            free(newNode->word);
             free(newNode);
             return;
         }
@@ -81,19 +81,47 @@ void insertHT(HashTable* table, const unsigned char* word)
     necBucket->tail = newNode;
 }
 
-int searchHT(HashTable* table, const unsigned char* word)
-{
+// int searchHT(HashTable* table, const unsigned char* word)
+// {
+//     assert(table);
+//     assert(word);
+    
+//     size_t index = hashFunction(word);
+//     Node* current = table->buckets[index].head;
+//     while (current != NULL) 
+//     {
+//         if (strcmp(current->word, (const char*)word) == 0) 
+//         {
+//             return 1;
+//         }
+//         current = current->next;
+//     }
+//     return 0;
+// }
+
+int searchHT(HashTable* table, const unsigned char* word) {
     assert(table);
     assert(word);
-    
+
     size_t index = hashFunction(word);
     Node* current = table->buckets[index].head;
+
+    __m256i word_vec = _mm256_loadu_si256((const __m256i*)word);
+
     while (current != NULL) 
     {
-        if (strcmp(current->word, (const char*)word) == 0) 
-        {
+        
+        __m256i current_vec = _mm256_loadu_si256((const __m256i*)current->word);
+        
+        __m256i cmp_result = _mm256_cmpeq_epi8(word_vec, current_vec);
+        
+        int mask = _mm256_movemask_epi8(cmp_result);
+
+        
+        if (mask == 0xFFFFFFFF) {
             return 1;
         }
+
         current = current->next;
     }
     return 0;
@@ -203,7 +231,6 @@ void visualizeHT(HashTable* table, const char* outputFile)
 
 static void freeNode(Node* node) 
 {
-    free(node->word);
     free(node);
 }
 
@@ -211,20 +238,13 @@ static Node* createNode(const unsigned char* word)
 {
     assert(word);
     Node* node = (Node*)malloc(sizeof(Node));
-
+    memset(node->word, 0, c_maxWordLen);
     if (!node)
     {
         printf("Memory allocation failed for node\n");
         exit(1);
     }
-    node->word = (char*)malloc(strlen((const char*)word) + 1);
-    
-    if (!node->word)
-    {
-        printf("Memory allocation failed for word\n");
-        free(node);
-        exit(1);
-    }
+
     strcpy(node->word, (const char*)word);
     node->prev = NULL;
     node->next = NULL;
