@@ -6,17 +6,17 @@
 #include <stdint.h>
 #include "hash_utils.h"
 
-// extern "C" int myDjb2(const unsigned char *format, ...);
-uint32_t myDjb2(const unsigned char* word);
-uint32_t myDjb2(const unsigned char* word) 
-{
-    uint32_t hash = 5381;
-    while (*word) {
-        hash = ((hash << 5) + hash) + *word;
-        word++;
-    }
-    return hash % c_tableSize;
-}
+extern "C" int myDjb2(const unsigned char *format, ...);
+// uint32_t myDjb2(const unsigned char* word);
+// uint32_t myDjb2(const unsigned char* word) 
+// {
+//     uint32_t hash = 5381;
+//     while (*word) {
+//         hash = ((hash << 5) + hash) + *word;
+//         word++;
+//     }
+//     return hash % c_tableSize;
+// }
 
 static void   freeNode     (Node* node);
 static Node*  createNode   (const unsigned char* word);
