@@ -13,8 +13,8 @@ int main()
 {
     // cleanText("book.txt", "cleanedBook.txt");
     HashTable* table = createHT();
-    parseText("cleanedBook.txt", table);
-    runTest(table, "keys.txt");
+    parseText("txt/cleanedBook.txt", table);
+    runTest(table, "txt/keys.txt");
     // for (size_t i = 0; i < c_dictSize; i++)
     // {
     //     if (searchHT(table, (const unsigned char*)dict[i])) printf("%s exist!\n", dict[i]);
