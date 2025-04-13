@@ -110,7 +110,6 @@ void insertHT(HashTable* table, const unsigned char* word)
 //     }
 //     return 0;
 // }
-
 int searchHT(HashTable* table, const unsigned char* word) {
     assert(table);
     assert(word);

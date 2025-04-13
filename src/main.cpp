@@ -15,7 +15,7 @@ int main()
     HashTable* table = createHT();
     parseText("cleanedBook.txt", table);
     //prepareKeys("keys.txt", "preparedKeys.txt");
-    runTest(table, "keys.txt");
+    runTest(table, "preparedKeys.txt");
     // for (size_t i = 0; i < c_dictSize; i++)
     // {
     //     if (searchHT(table, (const unsigned char*)dict[i])) printf("%s exist!\n", dict[i]);
@@ -38,21 +38,17 @@ void runTest(HashTable* table, const char* keysFile) {
     }
 
     char buffer[c_maxWordLen] = {0};
-
-    while (fgets(buffer, sizeof(buffer), file)) 
+    while (1)
     {
-        size_t len = strlen(buffer);
-        if (len > 0 && buffer[len - 1] == '\n') {
-            buffer[len - 1] = '\0';
-            len--;
-        }
-        
+        size_t bytes_read = fread(buffer, 1, 32, file);
+
+        if (bytes_read != 32) break;
+
         if (searchHT(table, (const unsigned char*)buffer)) 
         {
+            buffer[31] = '\0';
             printf("%s exist!\n", buffer);
         }
-        memset(buffer, 0, c_maxWordLen);
     }
-
     fclose(file);
 }
