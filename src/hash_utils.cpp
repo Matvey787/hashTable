@@ -3,8 +3,20 @@
 #include <string.h>
 #include <assert.h>
 #include <immintrin.h>
-
+#include <stdint.h>
 #include "hash_utils.h"
+
+// extern "C" int myDjb2(const unsigned char *format, ...);
+uint32_t myDjb2(const unsigned char* word);
+uint32_t myDjb2(const unsigned char* word) 
+{
+    uint32_t hash = 5381;
+    while (*word) {
+        hash = ((hash << 5) + hash) + *word;
+        word++;
+    }
+    return hash % c_tableSize;
+}
 
 static void   freeNode     (Node* node);
 static Node*  createNode   (const unsigned char* word);
@@ -52,7 +64,7 @@ void freeHT(HashTable* table)
 
 void insertHT(HashTable* table, const unsigned char* word)
 {
-    size_t index = hashFunction(word);
+    size_t index = myDjb2(word) ;
     Node* newNode = createNode(word);
 
     if (table->buckets[index].head == NULL)
@@ -103,7 +115,7 @@ int searchHT(HashTable* table, const unsigned char* word) {
     assert(table);
     assert(word);
 
-    size_t index = hashFunction(word);
+    size_t index = myDjb2(word) ;
     Node* current = table->buckets[index].head;
 
     __m256i word_vec = _mm256_loadu_si256((const __m256i*)word);
