@@ -148,3 +148,35 @@ void parseText(const char* file, HashTable* table)
 
 //     return 
 // }
+
+void prepareKeys(const char* rawKeysFile, const char* outputKeysFile) {
+
+    FILE* inFile = fopen(rawKeysFile, "r");
+    if (!inFile) {
+        perror("Error opening input file");
+        return;
+    }
+
+    FILE* outFile = fopen(outputKeysFile, "w");
+    if (!outFile) {
+        perror("Error opening output file");
+        fclose(inFile);
+        return;
+    }
+
+    char buffer[32] = {0};
+
+    while (fgets(buffer, sizeof(buffer), inFile)) {
+        size_t len = strlen(buffer) - 1;
+
+        if (len < 32)
+        {
+            memset(buffer + len , 0, 32 - len);
+        }
+
+        fwrite(buffer, sizeof(char), 32, outFile);
+    }
+
+    fclose(inFile);
+    fclose(outFile);
+}
