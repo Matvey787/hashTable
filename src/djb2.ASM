@@ -7,7 +7,6 @@ global myDjb2
 myDjb2:
     
     push rbx
-
     
     mov ebx, 5381          
 
@@ -23,7 +22,6 @@ myDjb2:
     add ecx, ebx           ; (hash << 5) + hash = hash * 33
     add ecx, eax           ; + *word
     mov ebx, ecx
-
 
     inc rdi                
     jmp .loop              
