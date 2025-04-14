@@ -3,7 +3,6 @@ global myDjb2
 
 ; djv2 hash func
 
-
 myDjb2:
     
     push rbx
