@@ -64,7 +64,7 @@ void freeHT(HashTable* table)
 
 void insertHT(HashTable* table, const unsigned char* word)
 {
-    size_t index = myDjb2(word) ;
+    size_t index = hashFunction(word) ;
     Node* newNode = createNode(word);
 
     if (table->buckets[index].head == NULL)
@@ -114,7 +114,7 @@ int searchHT(HashTable* table, const unsigned char* word) {
     assert(table);
     assert(word);
 
-    size_t index = myDjb2(word) ;
+    size_t index = hashFunction(word) ;
     Node* current = table->buckets[index].head;
 
     __m256i word_vec = _mm256_loadu_si256((const __m256i*)word);
