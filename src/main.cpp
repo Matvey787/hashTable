@@ -15,7 +15,7 @@ int main()
     HashTable* table = createHT();
     parseText("cleanedBook.txt", table);
     //prepareKeys("keys.txt", "preparedKeys.txt");
-    runTest(table, "keys.txt");
+    runTest(table, "txt/keys.txt");
     // for (size_t i = 0; i < c_dictSize; i++)
     // {
     //     if (searchHT(table, (const unsigned char*)dict[i])) printf("%s exist!\n", dict[i]);
