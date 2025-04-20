@@ -1,2 +1,4 @@
 *.txt
 keys.txt
+perf.data
+perf.data.old
