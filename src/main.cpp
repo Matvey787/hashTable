@@ -14,7 +14,7 @@ int main()
     // cleanText("book.txt", "cleanedBook.txt");
     HashTable* table = createHT();
     parseText("cleanedBook.txt", table);
-    prepareKeys("keys.txt", "preparedKeys.txt");
+    //prepareKeys("keys.txt", "preparedKeys.txt");
     runTest(table, "preparedKeys.txt");
     // for (size_t i = 0; i < c_dictSize; i++)
     // {
