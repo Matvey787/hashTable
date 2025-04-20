@@ -5,17 +5,54 @@
 #include <immintrin.h>
 #include <stdint.h>
 #include "hash_utils.h"
+#include <assert.h>
+
+uint32_t murmur3_32(const unsigned char* key, size_t len, uint32_t seed) ;
+
+size_t myMurmur3(const unsigned char* str);
 
 // extern "C" int myDjb2(const unsigned char *format, ...);
-uint32_t myDjb2(const unsigned char* word);
-uint32_t myDjb2(const unsigned char* word) 
-{
-    uint32_t hash = 5381;
-    while (*word) {
-        hash = ((hash << 5) + hash) + *word;
-        word++;
+uint32_t murmur3_32(const unsigned char* key, size_t len, uint32_t seed) {
+    assert(key);
+    uint32_t h = seed;
+    uint32_t k;
+
+    for (size_t i = len >> 2; i; i--) {
+        memcpy(&k, key, sizeof(uint32_t));
+        key += sizeof(uint32_t);
+        k *= 0xcc9e2d51;
+        k = (k << 15) | (k >> 17);
+        k *= 0x1b873593;
+        h ^= k;
+        h = (h << 13) | (h >> 19);
+        h = h * 5 + 0xe6546b64;
     }
-    return hash % c_tableSize;
+
+    k = 0;
+    for (size_t i = len & 3; i; i--) {
+        k <<= 8;
+        k |= key[i - 1];
+    }
+    if (len & 3) {
+        k *= 0xcc9e2d51;
+        k = (k << 15) | (k >> 17);
+        k *= 0x1b873593;
+        h ^= k;
+    }
+
+    h ^= len;
+    h ^= h >> 16;
+    h *= 0x85ebca6b;
+    h ^= h >> 13;
+    h *= 0xc2b2ae35;
+    h ^= h >> 16;
+
+    return h % c_tableSize;
+}
+
+size_t myMurmur3(const unsigned char* str) {
+    assert(str);
+    return murmur3_32(str, strlen((const char*)str), 0);
 }
 
 static void   freeNode     (Node* node);
@@ -64,7 +101,7 @@ void freeHT(HashTable* table)
 
 void insertHT(HashTable* table, const unsigned char* word)
 {
-    size_t index = myDjb2(word) ;
+    size_t index = myMurmur3(word) ;
     Node* newNode = createNode(word);
 
     if (table->buckets[index].head == NULL)
@@ -115,7 +152,7 @@ int searchHT(HashTable* table, const unsigned char* word) {
     assert(table);
     assert(word);
 
-    size_t index = myDjb2(word) ;
+    size_t index = myMurmur3(word) ;
     Node* current = table->buckets[index].head;
 
     __m256i word_vec = _mm256_loadu_si256((const __m256i*)word);
@@ -144,7 +181,7 @@ void deleteHT(HashTable* table, const unsigned char* word)
     assert(table);
     assert(word);
 
-    size_t index = myDjb2(word);
+    size_t index = myMurmur3(word);
     Node* current = table->buckets[index].head;
 
     while (current != NULL) {
