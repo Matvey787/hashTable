@@ -4,3 +4,5 @@ obj/
 *.txt
 keys.txt
 intelVtune/
+perf.data
+perf.data.old
