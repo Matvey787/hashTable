@@ -144,7 +144,7 @@ void deleteHT(HashTable* table, const unsigned char* word)
     assert(table);
     assert(word);
 
-    size_t index = hashFunction(word);
+    size_t index = myDjb2(word);
     Node* current = table->buckets[index].head;
 
     while (current != NULL) {
