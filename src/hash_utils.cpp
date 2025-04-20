@@ -93,23 +93,6 @@ void insertHT(HashTable* table, const unsigned char* word)
     necBucket->tail = newNode;
 }
 
-// int searchHT(HashTable* table, const unsigned char* word)
-// {
-//     assert(table);
-//     assert(word);
-    
-//     size_t index = hashFunction(word);
-//     Node* current = table->buckets[index].head;
-//     while (current != NULL) 
-//     {
-//         if (strcmp(current->word, (const char*)word) == 0) 
-//         {
-//             return 1;
-//         }
-//         current = current->next;
-//     }
-//     return 0;
-// }
 int searchHT(HashTable* table, const unsigned char* word) {
     assert(table);
     assert(word);
@@ -117,16 +100,40 @@ int searchHT(HashTable* table, const unsigned char* word) {
     size_t index = myDjb2(word) ;
     Node* current = table->buckets[index].head;
 
-    __m256i word_vec = _mm256_loadu_si256((const __m256i*)word);
+    __m256i word_vec = {0};
+    asm volatile (
+        "vmovdqu (%1), %%ymm0\n\t"
+        : "=v" (word_vec)  
+        : "r" (word)       
+        : "memory"
+    );
 
     while (current != NULL) 
     {
-        
-        __m256i current_vec = _mm256_loadu_si256((const __m256i*)current->word);
-        
-        __m256i cmp_result = _mm256_cmpeq_epi8(word_vec, current_vec);
-        
-        int mask = _mm256_movemask_epi8(cmp_result);
+        // _mm256_loadu_si256((const __m256i*)current->word);
+        __m256i current_vec = {0};
+        asm volatile (
+            "vmovdqu (%1), %%ymm0\n\t"
+            : "=v" (current_vec) 
+            : "r" (current->word)
+            : "memory"
+        );
+        // _mm256_cmpeq_epi8(word_vec, current_vec);
+        __m256i cmp_result = {0}; 
+            asm volatile (
+                "vpcmpeqb %1, %2, %0\n\t"
+                : "=v" (cmp_result)
+                : "v" (word_vec), "v" (current_vec)
+                :
+            );
+        // _mm256_movemask_epi8(cmp_result);
+        int mask = 0;
+        asm volatile (
+            "vpmovmskb %1, %0\n\t"
+            : "=r" (mask)
+            : "v" (cmp_result)
+            :
+        );
 
         
         if (mask == 0xFFFFFFFF) {

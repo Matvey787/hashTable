@@ -59,7 +59,7 @@ void parseText(const char* file, HashTable* table)
     }
 
     // get file info
-    struct stat file_info = {0};
+    struct stat file_info = {};
     if (fstat(fileDescriptor, &file_info) == -1) 
     {
         close(fileDescriptor);
