@@ -238,7 +238,7 @@ static size_t hashFunction(const unsigned char* word)
 
     for (size_t i = 0; word[i] != '\0'; i++) 
     {
-        hash = hash * 31 + (unsigned long)word[i];
+        hash += (unsigned long)word[i];
     }
     return hash % c_tableSize;
 }
