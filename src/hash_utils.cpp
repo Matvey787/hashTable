@@ -275,7 +275,6 @@ void countWordsInBuckets(HashTable* table, const char* fileForData)
     dispersion = (size_t)sqrt(dispersion);
     fprintf(file, "%zu\n", dispersion);;
     fclose(file);
-    getchar();
 }
 
 static void freeNode(Node* node) 
