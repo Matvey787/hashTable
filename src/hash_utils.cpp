@@ -241,6 +241,29 @@ void visualizeHT(HashTable* table, const char* outputFile)
     }
 }
 
+void countWordsInBuckets(HashTable* table, const char* fileForData) {
+    assert(table);
+    FILE* file = fopen(fileForData, "w");
+    if (!file) {
+        perror("Error opening file for data");
+        return;
+    }
+
+    for (size_t i = 0, length = 0; i < c_tableSize; i++)
+    {
+        length = 0;
+        Node* current = table->buckets[i].head;
+        while (current != nullptr)
+        {
+            ++length;
+            current = current->next;
+        }
+        fprintf(file, "%zu %zu\n", i + 1, length);
+    }
+    fclose(file);
+}
+
+
 static void freeNode(Node* node) 
 {
     free(node);

@@ -25,4 +25,6 @@ void insertHT(HashTable* table, const unsigned char* word);
 int searchHT(HashTable* table, const unsigned char* word);
 void deleteHT(HashTable* table, const unsigned char* word);
 void visualizeHT(HashTable* table, const char* outputFile);
+void countWordsInBuckets(HashTable* table, const char* fileForData);
+
 #endif // HASH_UTILS_H
