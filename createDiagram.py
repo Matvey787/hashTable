@@ -31,7 +31,7 @@ def plot_histogram(filename):
     
     plt.axhline(y=mean, color='red', linestyle='-', linewidth=2, label=f'load factor (LF): {mean}')
 
-    plt.axhline(y=mean + spread, color='green', linestyle='--', linewidth=1.5, label=f'LF distribution')
+    plt.axhline(y=mean + spread, color='green', linestyle='--', linewidth=1.5, label=f'LF dispersion')
     plt.axhline(y=mean - spread, color='green', linestyle='--', linewidth=1.5)
     
     plt.xlabel('Index of bucket')
