@@ -36,30 +36,32 @@ sudo apt-get install linux-tools
 2. Collect perf data of your program
 
 ```bash
-perf record -e cycles --call-graph dwarf -g ./out
+perf record -e cycles --call-graph dwarf ./out
 ```
 
-If you get message:
+- `-e cycles` - параметр -e задает событие, которое будет отслеживаться. В данном случае cycles указывает на сбор данных о процессорных циклах (CPU clock cycles).
+- `--call-graph dwarf` - включает запись стеков вызовов (call stacks), чтобы можно было анализировать, какие функции вызывали друг друга во время выполнения программы.
 
-```txt
-Access to performance monitoring and observability operations is limited.
-Consider adjusting /proc/sys/kernel/perf_event_paranoid setting to open
-access to performance monitoring and observability operations for processes
-without CAP_PERFMON, CAP_SYS_PTRACE or CAP_SYS_ADMIN Linux capability.
-More information can be found at 'Perf events and tool security' document:
-https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html
-perf_event_paranoid setting is 4:
-  -1: Allow use of (almost) all events by all users
-      Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK
->= 0: Disallow raw and ftrace function tracepoint access
->= 1: Disallow CPU event access
->= 2: Disallow kernel profiling
-To make the adjusted perf_event_paranoid setting permanent preserve it
-in /etc/sysctl.conf (e.g. kernel.perf_event_paranoid = <setting>)
-```
-
-Just use it:
-
-```bash
-sudo sysctl -w kernel.perf_event_paranoid=-1  
-```
+>[!NOTE]  
+>If you get message:
+>
+>Access to performance monitoring and observability operations is limited.  
+>Consider adjusting /proc/sys/kernel/perf_event_paranoid setting to open  
+>access to performance monitoring and observability operations for processes  
+>without CAP_PERFMON, CAP_SYS_PTRACE or CAP_SYS_ADMIN Linux capability.  
+>More information can be found at 'Perf events and tool security' document:  
+>https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html  
+>perf_event_paranoid setting is 4:  
+>  -1: Allow use of (almost) all events by all users  
+>      Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK  
+>= 0: Disallow raw and ftrace function tracepoint access  
+>= 1: Disallow CPU event access  
+>= 2: Disallow kernel profiling  
+>To make the adjusted perf_event_paranoid setting permanent preserve it  
+>in /etc/sysctl.conf (e.g. kernel.perf_event_paranoid = <setting>)  
+>
+>Just use it:
+>
+>```bash
+>sudo sysctl -w kernel.perf_event_paranoid=-1  
+>```
