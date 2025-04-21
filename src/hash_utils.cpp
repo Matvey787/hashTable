@@ -4,6 +4,8 @@
 #include <assert.h>
 #include <immintrin.h>
 #include <stdint.h>
+#include <math.h>
+
 #include "hash_utils.h"
 
 // extern "C" int myDjb2(const unsigned char *format, ...);
@@ -241,13 +243,19 @@ void visualizeHT(HashTable* table, const char* outputFile)
     }
 }
 
-void countWordsInBuckets(HashTable* table, const char* fileForData) {
+
+void countWordsInBuckets(HashTable* table, const char* fileForData)
+{
     assert(table);
     FILE* file = fopen(fileForData, "w");
-    if (!file) {
+    if (!file)
+    {
         perror("Error opening file for data");
         return;
     }
+    size_t summary = 0;
+    size_t loadFactor = 0;
+    size_t dispersion = 0;
 
     for (size_t i = 0, length = 0; i < c_tableSize; i++)
     {
@@ -258,8 +266,28 @@ void countWordsInBuckets(HashTable* table, const char* fileForData) {
             ++length;
             current = current->next;
         }
+        summary += length;
+
         fprintf(file, "%zu %zu\n", i + 1, length);
     }
+    loadFactor = summary / c_tableSize;
+    
+    fprintf(file, "%zu\n", loadFactor);
+
+    for (size_t i = 0, length = 0; i < c_tableSize; i++)
+    {
+        length = 0;
+        Node* current = table->buckets[i].head;
+        while (current != nullptr)
+        {
+            ++length;
+            current = current->next;
+        }
+        dispersion += (loadFactor - length) * (loadFactor - length);
+    }
+    dispersion /= c_tableSize;
+    dispersion = (size_t)sqrt(dispersion);
+    fprintf(file, "%zu\n", dispersion);;
     fclose(file);
 }
 

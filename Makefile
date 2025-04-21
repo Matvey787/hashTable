@@ -1,5 +1,5 @@
 # Compiler and flags
-CXX = gcc
+CXX = g++
 SANITIZER = 
 CXXFLAGS = -I inc -g -mavx2 -no-pie -D _DEBUG -std=c++17 -O2 -Wall -Wextra -Weffc++
 
